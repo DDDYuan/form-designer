@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import $ from "jquery";
 import _ from "lodash";
 
 class App extends Component {
@@ -90,12 +89,18 @@ class Previewer extends Component {
 
 class Editor extends Component {
   removeItem = event => {
-    const index = $(event.currentTarget).data("item-index");
+    const index = parseInt(
+      event.currentTarget.getAttribute("data-item-index"),
+      10
+    );
     this.props.removeFormItem(index);
   };
 
   changeItem = event => {
-    const index = $(event.currentTarget).data("item-index");
+    const index = parseInt(
+      event.currentTarget.getAttribute("data-item-index"),
+      10
+    );
     const value = event.currentTarget.value;
     this.props.changeValue(index, value);
   };
