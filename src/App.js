@@ -34,7 +34,7 @@ class App extends Component {
 
   changeValue = (index, value) => {
     const items = this.state.items;
-    items.find(item => items.indexOf(item) === index).value = value;
+    _.find(items, (item, i) => i === index).value = value;
     this.setState({ items });
   };
 
@@ -49,7 +49,7 @@ class App extends Component {
           <Editor
             items={this.state.items}
             removeFormItem={this.removeFormItem}
-            changeItem={this.changeValue}
+            changeValue={this.changeValue}
           />
           <div id="dialog" />
         </div>
@@ -72,8 +72,8 @@ class Previewer extends Component {
     return (
       <div className="row justify-content-center">
         <div className="col-6">
-          {this.props.items.map(item => (
-            <div className="input-group mb-4">
+          {this.props.items.map((item, index) => (
+            <div key={index} className="input-group mb-4">
               <input
                 className="form-control"
                 type={item.type}
@@ -94,19 +94,30 @@ class Editor extends Component {
     this.props.removeFormItem(index);
   };
 
+  changeItem = event => {
+    const index = $(event.currentTarget).data("item-index");
+    const value = event.currentTarget.value;
+    this.props.changeValue(index, value);
+  };
+
   render() {
     return (
       <div className="row justify-content-center">
         <div className="col-6">
           {this.props.items.map((item, index) => {
             return (
-              <div className="input-group mb-4">
-                <input className="form-control" type={item.type} />
-                <div class="input-group-append">
+              <div key={index} className="input-group mb-4">
+                <input
+                  className="form-control"
+                  type={item.type}
+                  value={item.value}
+                  onChange={this.changeItem}
+                  data-item-index={index}
+                />
+                <div className="input-group-append">
                   <button
-                    class="btn btn-danger"
+                    className="btn btn-danger"
                     onClick={this.removeItem}
-                    // onChange={this.changeValue}
                     data-item-index={index}
                   >
                     -
@@ -177,9 +188,7 @@ class AddItemDialog extends Component {
               onChange={this.onTypeChange}
               value="text"
             />
-            <label class="form-check-label" for="">
-              Text Input
-            </label>
+            <label className="form-check-label">Text Input</label>
             <br />
             <input
               type="radio"
@@ -189,9 +198,7 @@ class AddItemDialog extends Component {
               onChange={this.onTypeChange}
               value="date"
             />
-            <label class="form-check-label" for="">
-              Date Picker
-            </label>
+            <label className="form-check-label">Date Picker</label>
             <br />
             <br />
             <button className="btn btn-info" onClick={this.onSubmit}>
